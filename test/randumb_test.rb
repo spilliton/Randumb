@@ -192,4 +192,11 @@ class RandumbTest < Test::Unit::TestCase
     end
   end
 
+  should "alias sample to random method" do
+    albums = Album.joins(:artist).where("artists.views > 1")
+
+    assert_equal Artist.method(:sample), Artist.method(:random)
+    assert_equal albums.method(:sample), albums.method(:random)
+  end
+
 end
