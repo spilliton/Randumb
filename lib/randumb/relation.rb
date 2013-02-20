@@ -9,19 +9,24 @@ module Randumb
 
       # If the max_items argument is omitted, one random entity will be returned.
       # If you provide the integer argument, you will get back an array of records.
-      def random(max_items = nil)
-        random_weighted(nil, max_items)
+      def random(max_items = nil, options = {})
+        random_weighted(nil, max_items, options)
       end
 
       # If ranking_column is provided, that named column wil be multiplied
       # by a random number to determine probability of order. The ranking column must be numeric.
-      def random_weighted(ranking_column, max_items = nil)
+      def random_weighted(ranking_column, max_items = nil, options = {})
         relation = clone
         return random_by_id_shuffle(max_items) if is_randumb_postges_case?(relation, ranking_column)
         raise_unless_valid_ranking_column(ranking_column)
 
         order_clause = random_order_clause(ranking_column)
         the_scope = relation.order(order_clause)
+
+        if options[:exclude] and options[:exclude].respond_to?(:id)
+          # table_name = options[:exclude].class.table_name
+          the_scope = relation.where("#{table_name}.id != ?", options[:exclude].id) 
+        end
 
         # override the limit if they are requesting multiple records
         if max_items && (!relation.limit_value || relation.limit_value > max_items)
@@ -36,11 +41,12 @@ module Randumb
       # This was my first implementation, adding it as an option for people to use
       # and to fall back on for pesky DB one off situations...
       #    https://github.com/spilliton/randumb/issues/7
-      def random_by_id_shuffle(max_items = nil)
+      def random_by_id_shuffle(max_items = nil, options = {})
         return_first_record = max_items.nil? # see return switch at end
         max_items ||= 1
         relation = clone
         ids = fetch_random_ids(relation, max_items)
+        ids.delete(options[:exclude].id) if options[:exclude] and options[:exclude].respond_to?(:id)
 
         # build new scope for final query
         the_scope = klass.includes(includes_values)
@@ -129,16 +135,16 @@ module Randumb
 
     # Class methods
     module Base
-      def random(max_items = nil)
-        relation.random(max_items)
+      def random(max_items = nil, options = {})
+        relation.random(max_items, options)
       end
 
-      def random_weighted(ranking_column, max_items = nil)
-        relation.random_weighted(ranking_column, max_items)
+      def random_weighted(ranking_column, max_items = nil, options = {})
+        relation.random_weighted(ranking_column, max_items, options)
       end
 
-      def random_by_id_shuffle(max_items = nil)
-        relation.random_by_id_shuffle(max_items)
+      def random_by_id_shuffle(max_items = nil, options = {})
+        relation.random_by_id_shuffle(max_items, options)
       end
     end
 
