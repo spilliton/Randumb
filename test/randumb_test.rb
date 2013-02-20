@@ -90,6 +90,20 @@ class RandumbTest < Test::Unit::TestCase
         assert_equal true, random_artists.include?(@magnetic_fields)
       end
 
+      should "not return a record if it's been excluded" do
+        random_artists = Artist.random(10, :exclude => @fiona_apple)
+        assert_equal 2, random_artists.length
+        assert_equal true, random_artists.include?(@high_on_fire)
+        assert_equal false, random_artists.include?(@fiona_apple)
+        assert_equal true, random_artists.include?(@magnetic_fields)
+
+        random_artists = Artist.random_by_id_shuffle(10, :exclude => @fiona_apple)
+        assert_equal 2, random_artists.length
+        assert_equal true, random_artists.include?(@high_on_fire)
+        assert_equal false, random_artists.include?(@fiona_apple)
+        assert_equal true, random_artists.include?(@magnetic_fields)
+      end
+
       context "with some albums" do
         setup do
           @tidal = FactoryGirl.create(:album, :name => "Tidal", :artist => @fiona_apple)
@@ -129,6 +143,17 @@ class RandumbTest < Test::Unit::TestCase
           assert_equal true, albums.include?(@sixty_nine_love_songs)
         end
 
+        should "work excluding a record with joins for default method" do
+          albums = Album.joins(:artist).where("artists.views > 1").
+            random(3, :exclude => @extraordinary_machine)
+
+          assert_equal 2, albums.length
+          assert_equal false, albums.include?(@snakes_for_the_divine)
+          assert_equal true, albums.include?(@tidal)
+          assert_equal false, albums.include?(@extraordinary_machine)
+          assert_equal true, albums.include?(@sixty_nine_love_songs)
+        end
+
         should "work with joins for shuffle method" do
           albums = Album.joins(:artist).where("artists.views > 1").random_by_id_shuffle(3)
 
@@ -136,6 +161,17 @@ class RandumbTest < Test::Unit::TestCase
           assert_equal false, albums.include?(@snakes_for_the_divine)
           assert_equal true, albums.include?(@tidal)
           assert_equal true, albums.include?(@extraordinary_machine)
+          assert_equal true, albums.include?(@sixty_nine_love_songs)
+        end
+
+        should "work excluding a record with joins for shuffle method" do
+          albums = Album.joins(:artist).where("artists.views > 1").
+            random_by_id_shuffle(3, :exclude => @extraordinary_machine)
+
+          assert_equal 2, albums.length
+          assert_equal false, albums.include?(@snakes_for_the_divine)
+          assert_equal true, albums.include?(@tidal)
+          assert_equal false, albums.include?(@extraordinary_machine)
           assert_equal true, albums.include?(@sixty_nine_love_songs)
         end
 
