@@ -7,6 +7,9 @@ class RandumbTest < Test::Unit::TestCase
     assert_equal expected, obj.send(:random_by_id_shuffle, params), "when calling random_by_id_shuffle"
   end
 
+  should "should alias #random as #sample" do
+    assert Artist.respond_to?(:sample)
+  end
 
   should "should return empty when no record in table" do
     assert_equal 0, Artist.count
