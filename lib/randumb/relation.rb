@@ -29,9 +29,9 @@ module Randumb
           # keep prior orders and append random
           all_orders = (relation.orders + [order_clause]).join(", ")
           # override all previous orders
-          relation.reorder(all_orders) 
+          relation.reorder(all_orders)
         end
-        
+
         # override the limit if they are requesting multiple records
         if max_items && (!relation.limit_value || relation.limit_value > max_items)
           the_scope = the_scope.limit(max_items)
@@ -144,6 +144,7 @@ module Randumb
       def random(max_items = nil)
         relation.random(max_items)
       end
+      alias sample random
 
       def random_weighted(ranking_column, max_items = nil)
         relation.random_weighted(ranking_column, max_items)
