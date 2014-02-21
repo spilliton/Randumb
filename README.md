@@ -21,9 +21,10 @@ bundle install
 ## Usage
 
 ``` ruby
-Artist.random    # Add an random ordering to the scope
-Artist.random(3) # an ActiveRecord::Relation. When converted to an Array will contain 3 Artists at random
-Artist.random(1) # an ActiveRecord::Relation. When converted to an Array will contain a random Artist
+Artist.random       # returns an ActiveRecord::Relation. Add a random ordering to the scope
+Artist.random(3)    # returns an ActiveRecord::Relation. When converted to an Array will contain 3 Artists at random
+Artist.random(1)    # returns an ActiveRecord::Relation. When converted to an Array will contain a random Artist
+Artist.random.first # returns a random Artist
 ```
 
 ### Scopes
