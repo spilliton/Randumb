@@ -30,16 +30,15 @@ module Randumb
           # keep prior orders and append random
           all_orders = (relation.orders + [order_clause]).join(", ")
           # override all previous orders
-          relation.reorder(all_orders) 
+          relation.reorder(all_orders)
         end
-        
+
         # override the limit if they are requesting multiple records
         if max_items && (!relation.limit_value || relation.limit_value > max_items)
           the_scope = the_scope.limit(max_items)
         end
 
-        # return first record if method was called without parameters
-        max_items ? the_scope.to_a : the_scope.first
+        the_scope
       end
 
 
@@ -102,7 +101,7 @@ module Randumb
 
         id_results = connection.select_all(id_only_relation.to_sql)
 
-        
+
         rng = random_number_generator(opts)
         if max_ids == 1 && id_results.count > 0
           rand_index = rng.rand(id_results.count)
