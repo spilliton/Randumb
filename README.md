@@ -21,15 +21,16 @@ bundle install
 ## Usage
 
 ``` ruby
-Artist.random # a random Artist if there are any, otherwise nil
-Artist.random(3)  # an array of three Artists picked at random
-Artist.random(1)  # an array containing one random Artist
+Artist.random       # returns an ActiveRecord::Relation. Add a random ordering to the scope
+Artist.random(3)    # returns an ActiveRecord::Relation. When converted to an Array will contain 3 Artists at random
+Artist.random(1)    # returns an ActiveRecord::Relation. When converted to an Array will contain a random Artist
+Artist.random.first # returns a random Artist
 ```
 
 ### Scopes
 ``` ruby
-# randumb works like the active record "all, first, and last" methods
-Artist.has_views.includes(:albums).where(["created_at > ?", 2.days.ago]).random(10)
+# randumb appends an ActiveRecord::Relation scope to the query
+Artist.has_views.includes(:albums).where(["created_at > ?", 2.days.ago]).random(10).to_a
 ```
 
 If only 5 records matched the conditions specified above, randumb will return an array with those 5 records in random order (as opposed to 10 records with duplicates).
@@ -68,8 +69,8 @@ If you wish to seed the randomness so that you can have predictable outcomes, pr
 ``` ruby
 # Assuming no no records have been added between calls
 # These will return the same 2 artists in the same order both times
-Artist.random(2, seed: 123) 
-Artist.random(2, seed: 123) 
+Artist.random(2, seed: 123)
+Artist.random(2, seed: 123)
 ```
 
 ### Pick Your Poison
