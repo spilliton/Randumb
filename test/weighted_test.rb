@@ -30,14 +30,14 @@ class WeightedTest < Test::Unit::TestCase
       end
     else
       should "work with uniq if not postgres" do
-        assert_nil Artist.uniq.random_weighted_by_views
+        assert_equal [], Artist.uniq.random_weighted_by_views
       end
     end
   end
 
   should "not blow up with integer columns and float column types" do
-    assert_nil Artist.random_weighted_by_views
-    assert_nil Artist.random_weighted_by_rating
+    assert_equal [], Artist.random_weighted_by_views
+    assert_equal [], Artist.random_weighted_by_rating
   end
 
   should "not interfere with active record dynamic methods that use method_missing" do
@@ -64,13 +64,13 @@ class WeightedTest < Test::Unit::TestCase
 
     should "order by ranking column with explicit method call" do
       assert_hits_per_views do
-        Artist.random_weighted("views").views
+        Artist.random_weighted("views").first.views
       end
     end
 
     should "order by ranking column with method_missing" do
       assert_hits_per_views do
-        Artist.random_weighted_by_views.views
+        Artist.random_weighted_by_views.first.views
       end
     end
 
@@ -112,7 +112,7 @@ class WeightedTest < Test::Unit::TestCase
   def assert_hits_per_views
     hits_per_views = Hash.new
     @view_counts.each { |views| hits_per_views[views] = 0 }
-    
+
     1000.times do
       hits_per_views[yield] += 1
     end

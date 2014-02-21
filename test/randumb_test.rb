@@ -10,17 +10,15 @@ class RandumbTest < Test::Unit::TestCase
   should "should return empty when no record in table" do
     assert_equal 0, Artist.count
 
-    assert_equal_for_both_methods nil, Artist
-    # above is equivalent to:
-    # assert_equal nil, Artist.random
-    # assert_equal nil, Artist.random_by_id_shuffle
+    assert_equal [], Artist.random
+    assert_equal nil, Artist.random_by_id_shuffle
 
-    assert_equal_for_both_methods [], Artist, 1
-    # above is equivalent to:
-    # assert_equal [], Artist.random(1)
-    # assert_equal [], Artist.random_by_id_shuffle(1)
 
-    assert_equal_for_both_methods nil, Artist.limit(50)
+    assert_equal [], Artist.random(1)
+    assert_equal [], Artist.random_by_id_shuffle(1)
+
+    assert_equal [], Artist.limit(50).random
+    assert_equal nil, Artist.limit(50).random_by_id_shuffle
   end
 
   context "1 record in the table" do
@@ -31,13 +29,19 @@ class RandumbTest < Test::Unit::TestCase
     should "select only 1 record even when you request more" do
       assert_equal 1, Artist.count
 
-      assert_equal_for_both_methods @high_on_fire, Artist
-      assert_equal_for_both_methods [@high_on_fire], Artist, 1
-      assert_equal_for_both_methods [@high_on_fire], Artist, 30
+      assert_equal [@high_on_fire], Artist.random
+      assert_equal @high_on_fire, Artist.random_by_id_shuffle
+
+      assert_equal [@high_on_fire], Artist.random(1)
+      assert_equal [@high_on_fire], Artist.random_by_id_shuffle(1)
+
+      assert_equal [@high_on_fire], Artist.random(30)
+      assert_equal [@high_on_fire], Artist.random_by_id_shuffle(30)
     end
 
     should "not return a record that doesnt match where" do
-      assert_equal_for_both_methods nil, Artist.where(:name => "The Little Gentlemen")
+      assert_equal [], Artist.where(:name => "The Little Gentlemen").random
+      assert_equal nil, Artist.where(:name => "The Little Gentlemen").random_by_id_shuffle
     end
 
     context "3 records in table" do
@@ -47,7 +51,7 @@ class RandumbTest < Test::Unit::TestCase
       end
 
       should "apply randomness after other orders when using sql method" do
-        assert_equal @fiona_apple, Artist.order("views desc").random
+        assert_equal @fiona_apple, Artist.order("views desc").random.first
         assert_equal [@fiona_apple, @magnetic_fields], Artist.order("views desc").random(2)
       end
 
