@@ -23,9 +23,18 @@ bundle install
 The most common usage is a scope you can chain along like any other:
 
 ``` ruby
-Artist.order_by_rand.first # a random Artist if there are any, otherwise nil
+Artist.order_by_rand.first # a random Artist if there are any, otherwise nil (limits to 1)
 Artist.order_by_rand.limit(3).all  # an array of three Artists picked at random
 Artist.order_by_rand.limit(1).all  # an array containing one random Artist
+```
+
+By using `first`, the query is automatically limited to 1:
+
+``` ruby
+# The following are all equivalent.
+Artist.order_by_rand.first            
+Artist.order_by_rand.limit(1).first
+Artist.order_by_rand.limit(5).first
 ```
 
 ### How It Works
