@@ -31,6 +31,8 @@ module Randumb
           random_for_sqlite(opts)
         elsif adapter_name =~ /(postgres|postgis)/i
           random_for_postgres(opts)
+        elsif adapter_name =~ /mssql/i
+          random_for_mssql(opts)
         elsif adapter_name =~ /mysql/i
           random_for_mysql(opts)
         else
@@ -67,6 +69,10 @@ module Randumb
           connection.execute "SELECT SETSEED(#{seed_value})"
         end
         "RANDOM()"
+      end
+
+      def random_for_mssql(opts)
+        "NEWID()"
       end
 
       def random_for_mysql(opts)
