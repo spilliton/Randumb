@@ -1,6 +1,7 @@
-$:.unshift '.'; require File.dirname(__FILE__) + '/test_helper'
+require "minitest/autorun"
+require_relative "helper"
 
-class WeightedTest < Test::Unit::TestCase
+class TestWeighted < Minitest::Test
 
   should "raise exception when called with a non-existent column" do
     assert_raises(ArgumentError) do

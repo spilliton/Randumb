@@ -1,6 +1,5 @@
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'rubygems'
-require 'test/unit'
 require 'shoulda'
 require 'factory_girl'
 require 'faker'
@@ -47,10 +46,10 @@ dep = defined?(ActiveSupport::Dependencies) ? ActiveSupport::Dependencies : ::De
 dep.autoload_paths.unshift MODELS_PATH
 
 # load factories now
-require 'test/models/factories'
+require_relative 'models/factories'
 
 # clear db for every test
-class Test::Unit::TestCase
+class Minitest::Test
 
   def setup
     Artist.delete_all

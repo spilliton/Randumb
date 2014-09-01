@@ -13,11 +13,9 @@ Gem::Specification.new do |s|
   s.files       = Dir['lib/**/*.rb']
   s.test_files  = Dir['test/**/*.rb']
 
-  s.add_dependency 'rake'
-
   # need to test different versions of active record
   ar_env = ENV['ACTIVE_RECORD_VERSION'] || '>= 3.0.0'
-  ar_env = ">= 4.0.0" if ar_env == 'latest'
+  ar_env = ">= 4.1.0" if ar_env == 'latest'
   s.add_dependency 'activesupport', ar_env
   s.add_dependency 'activerecord', ar_env
 
@@ -36,6 +34,8 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'pg'
   end
 
+  s.add_development_dependency 'bundler', ['>= 1.0.0']
+  s.add_development_dependency 'rake', ['>= 0']
   s.add_development_dependency "shoulda"
   s.add_development_dependency "factory_girl", "~> 3.0"
   s.add_development_dependency "faker"
