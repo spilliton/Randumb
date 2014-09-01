@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'bundler', ['>= 1.0.0']
   s.add_development_dependency 'rake', ['>= 0']
+  s.add_development_dependency 'minitest', ['>= 5.4.1']
   s.add_development_dependency "shoulda"
   s.add_development_dependency "factory_girl", "~> 3.0"
   s.add_development_dependency "faker"
