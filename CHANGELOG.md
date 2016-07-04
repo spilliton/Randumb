@@ -1,3 +1,7 @@
+### 0.6.0 
+
+* Adding support for Microsoft SQL Server
+
 ### 0.5.0
 
 * Adding ```order_by_rand``` and ```order_by_rand_weighted``` scopes
