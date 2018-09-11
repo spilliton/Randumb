@@ -113,4 +113,5 @@ Fortunately, there is an easy workaround: Just wrap your query in a call to ```u
 
 I built this for use on [Compare Vinyl][comparevinyl].  Check out the homepage to see it in action :)
 
+
 [comparevinyl]: http://www.comparevinyl.com/
